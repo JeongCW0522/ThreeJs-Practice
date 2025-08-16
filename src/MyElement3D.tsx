@@ -5,7 +5,8 @@ import * as THREE from "three";
 const MyElement3D = () => {
   const refMesh = useRef<THREE.Mesh>(null);
   useFrame((state, delta) => {
-    refMesh.current!.rotation.y += delta;
+    if (!refMesh.current) return;
+    refMesh.current.rotation.y += delta; // 프레임레이트와 무관한 회전 속도
   });
 
   return (
