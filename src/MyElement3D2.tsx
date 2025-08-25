@@ -7,18 +7,35 @@ const MyElement3D2 = () => {
   const refMesh = useRef<THREE.Mesh>(null);
   const refWireMesh = useRef<THREE.Mesh>(null);
 
-  const { xSize, ySize, zSize, xSegments, ySegments, zSegments } = useControls({
-    xSize: { value: 1, min: 0.1, max: 5, step: 0.01 },
-    ySize: { value: 1, min: 0.1, max: 5, step: 0.01 },
-    zSize: { value: 1, min: 0.1, max: 5, step: 0.01 },
-    xSegments: { value: 1, min: 1, max: 10, step: 1 },
-    ySegments: { value: 1, min: 1, max: 10, step: 1 },
-    zSegments: { value: 1, min: 1, max: 10, step: 1 },
+  const {
+    radius,
+    widthSegments,
+    heightSegments,
+    phiStart,
+    phiLength,
+    thetaStart,
+    thetaLength,
+  } = useControls({
+    radius: { value: 1, min: 0.1, max: 5, step: 0.01 },
+    widthSegments: { value: 32, min: 3, max: 256, step: 1 },
+    heightSegments: { value: 32, min: 3, max: 256, step: 1 },
+    phiStart: { value: 0, min: 0, max: 360, step: 0.1 },
+    phiLength: { value: 360, min: 0, max: 360, step: 0.1 },
+    thetaStart: { value: 0, min: 0, max: 180, step: 0.1 },
+    thetaLength: { value: 180, min: 0, max: 180, step: 0.1 },
   });
 
   useEffect(() => {
     refWireMesh.current!.geometry = refMesh.current!.geometry;
-  }, [xSize, ySize, zSize, xSegments, ySegments, zSegments]);
+  }, [
+    radius,
+    widthSegments,
+    heightSegments,
+    phiStart,
+    phiLength,
+    thetaStart,
+    thetaLength,
+  ]);
 
   return (
     <>
@@ -27,8 +44,16 @@ const MyElement3D2 = () => {
 
       <OrbitControls />
       <mesh ref={refMesh}>
-        <boxGeometry
-          args={[xSize, ySize, zSize, xSegments, ySegments, zSegments]}
+        <sphereGeometry
+          args={[
+            radius,
+            widthSegments,
+            heightSegments,
+            (phiStart * Math.PI) / 180,
+            (phiLength * Math.PI) / 180,
+            (thetaStart * Math.PI) / 180,
+            (thetaLength * Math.PI) / 180,
+          ]}
         />
         <meshStandardMaterial color="#f0c49f" />
       </mesh>
@@ -36,6 +61,8 @@ const MyElement3D2 = () => {
       <mesh ref={refWireMesh}>
         <meshStandardMaterial emissive="yellow" wireframe={true} />
       </mesh>
+
+      <axesHelper scale={10} />
     </>
   );
 };
